@@ -1,0 +1,21 @@
+body{
+  text-align: center;
+}
+#MySignature{
+  margin: 10px auto;
+  width: 60%;
+  font-size: 30px;
+  color:#cc1abd;
+  font-weight: bold;
+  letter-spacing: 5px;
+  text-shadow: 0 2px 2px #65ccbb,0 -2px 1px rgb(72, 131, 155);
+  background-image: linear-gradient(to bottom,#3cdd6c,#d3d168);
+  border-radius: 10px;
+  line-height: 60px;
+  text-align: center;
+}
+img{
+  background-color: rgba(88, 233, 165, .3);
+  padding: 8px;
+  border-radius: 10px;
+}
