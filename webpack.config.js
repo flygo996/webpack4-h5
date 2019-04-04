@@ -145,6 +145,20 @@ module.exports = {
         //exclude: /node_modules/,  //不去检查node_modules里的内容，那里的js太多了，会非常慢
         include: resolve('src'), //直接规定查找的范围
       },
+      {
+        test: /\.html$/,
+        use: [
+          {
+            loader: 'html-loader',
+            options: {
+              attrs: ['img:src', 'img:data-src', 'audio:src', 'video:src'],
+              minimize: true,
+            },
+          },
+        ],
+        include: /\.html$/, // 所有的html文件
+        exclude: /node_modules/,
+      },
     ],
   },
 }
