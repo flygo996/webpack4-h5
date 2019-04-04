@@ -14,20 +14,17 @@ url-loader file-loader #file-loader解析地址，url-loader把图片地址解�
 mini-css-extract-plugin  #把css抽离插件适用于webpack4.3以上，低版本使用extract-text-webpack-plugin
 node-sass sass-loader postcss-loader autoprefixer #使用postcss和sass
 babel-loader babel-core babel-preset-env babel-polyfill #es6+转es5相关
-# html-loader #html文件直接引用img等资源，打包后路径不对，用该插件就可以解决！
 address #获取本机的ip地址
+html-loader #html文件直接引用img等资源，打包后路径不对，用该插件就可以解决！
 
 # 写一起如下：
-npm i -D webpack webpack-cli html-webpack-plugin clean-webpack-plugin webpack-dev-server style-loader css-loader url-loader file-loader mini-css-extract-plugin  node-sass sass-loader postcss-loader autoprefixer babel-loader babel-core babel-preset-env babel-polyfill address
+npm i -D webpack webpack-cli html-webpack-plugin clean-webpack-plugin webpack-dev-server style-loader css-loader url-loader file-loader mini-css-extract-plugin  node-sass sass-loader postcss-loader autoprefixer babel-loader babel-core babel-preset-env babel-polyfill address html-loader
 ```
 
 # 报错解决
-报错：DeprecationWarning: Tapable.plugin is deprecated. Use new API on `.hooks` instead
-原因：extract-text-webpack-plugin 不支持webpack4
-解决：使用extract-text-webpack-plugin@next版本。
-`yarn add extract-text-webpack-plugin@next -D`
-```
-可以发现版本号由"^3.0.2"变成了"^4.0.0-beta.0"
+babel-loader@8 会报某些错误，改为@7就可以了。
+npm un babel-loader
+npm i -D babel-loader@7
 
 
 # 报错解决
@@ -41,6 +38,7 @@ npm i -D webpack webpack-cli html-webpack-plugin clean-webpack-plugin webpack-de
     ]
   }
 }
+
 
 # bug处理
 index.html文件里img直接引用的文件，运行后不能直接显示，
