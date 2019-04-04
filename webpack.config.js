@@ -1,159 +1,47 @@
 const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const address = require('address') //获取主机地址
+
 // 转换为绝对路径
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
 module.exports = {
-  entry: './src/index.js', //入口文件，若不配置webpack4将自动查找src目录下的index.js文件
+  entry: './src/index.js',
   output: {
-    filename: '[name].bundle.js', //输出文件名，[name]表示入口文件js名
-    path: resolve('dist'), //输出文件路径
-    // publicPath: './' //这里要放的是静态资源CDN的地址(一般只在生产环境下配置)
-  },
-  module: {
-    // 处理对应模块
-    rules: [
-      {
-        test: /\.vue$/,
-        use: {
-          loader: 'vue-loader',
-        },
-        include: resolve('src'),
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.js$/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['es2015', 'env'],
-          },
-        },
-        include: resolve('src'),
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.s?css$/,
-        loader: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 1,
-              },
-            },
-            {
-              loader: 'postcss-loader',
-              options: {
-                // 如果没有options这个选项将会报错 No PostCSS Config found
-                plugins: loader => [
-                  require('autoprefixer')(), //CSS浏览器兼容
-                ],
-              },
-            },
-            {
-              loader: 'sass-loader',
-            },
-          ],
-        }),
-        include: resolve('src'),
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              outputPath: 'img/', //输出到img文件夹
-              limit: 10000, // 10KB以下使用 base64
-              name: '[name].[hash:8].[ext]',
-            },
-          },
-        ],
-        include: [resolve('src'), /\.html$/], //这里要加上html文件
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              outputPath: 'img/', //输出到img文件夹
-              limit: 10000, // 10KB以下使用 base64
-              name: '[name].[hash:8].[ext]',
-            },
-          },
-        ],
-        include: [resolve('src'), /\.html$/], //这里要加上html文件
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              outputPath: 'img/', //输出到img文件夹
-              limit: 10000, // 10KB以下使用 base64
-              name: '[name].[hash:8].[ext]',
-            },
-          },
-        ],
-        include: [resolve('src'), /\.html$/], //这里要加上html文件
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.html$/,
-        use: [
-          {
-            loader: 'html-loader',
-            options: {
-              attrs: ['img:src', 'img:data-src', 'audio:src', 'video:src'],
-              minimize: true,
-            },
-          },
-        ],
-        include: /\.html$/, // 所有的html文件
-        exclude: /node_modules/,
-      },
-    ],
-  },
-  devServer: {
-    //配置此静态文件服务器，可以用来预览打包后项目
-    inline: true, //打包后加入一个websocket客户端
-    hot: true, //热加载
-    contentBase: resolve('dist'), //开发服务运行时的文件根目录
-    host: address.ip(), //主机地址，默认为'localhost'
-    port: 9527, //端口号
-    open: true, //自动打开浏览器
-    compress: true, //开发服务器是否启动gzip等压缩
+    path: resolve('dist'),
+    filename: 'js/index.js',
   },
   plugins: [
-    // 对应的插件
     new HtmlWebpackPlugin({
-      //配置
-      template: './index.html', //以当前目录下的index.html文件为模板
+      title: 'webpack4',
+      template: './public/index.html', //以当前目录下的public/index.html文件为模板
       filename: 'index.html', //输出到dist里面的文件名
+      minify: {
+        removeComments: false, // 删除注释
+        collapseWhitespace: false, // 删除空格
+      },
     }),
-    new CleanWebpackPlugin(['dist']), //传入数组,指定要删除的目录
+
+    new CleanWebpackPlugin(),
+
     // 热更新，热更新不是刷新
     new webpack.HotModuleReplacementPlugin(),
-    //打包css生成另外的文件夹
-    new ExtractTextPlugin({
-      filename: '[name].[hash:8].css',
-      disable: false,
-      allChunks: false,
+    new MiniCssExtractPlugin({
+      filename: 'css/index.css',
     }),
   ],
+  devServer: {
+    inline: true, //打包后加入一个websocket客户端
+    contentBase: resolve('dist'), //开发服务运行时的文件根目录
+    host: address.ip(), // 默认是'localhost',
+    port: 1234,
+    open: true,
+  },
   optimization: {
     splitChunks: {
       cacheGroups: {
@@ -172,6 +60,12 @@ module.exports = {
           // 设置优先级，防止和自定义的公共代码提取时被覆盖，不进行打包
           priority: 10,
         },
+        styles: {
+          name: 'styles',
+          test: /\.scss|css$/,
+          chunks: 'all', // merge all the css chunk to one file
+          enforce: true,
+        },
       },
     },
   },
@@ -180,5 +74,77 @@ module.exports = {
     aggregateTimeout: 300,
     poll: 1000,
     ignored: ['dist', 'node_modules'],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.vue$/,
+        use: {
+          loader: 'vue-loader',
+        },
+        include: resolve('src'),
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '../',
+            },
+          },
+          'css-loader',
+        ],
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          //把scss编译到css文件里
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '../',
+            },
+          },
+          'css-loader', //注意顺序
+          {
+            loader: 'postcss-loader',
+            options: {
+              // 如果没有options这个选项将会报错 No PostCSS Config found
+              plugins: loader => [
+                require('autoprefixer')(), //CSS浏览器兼容
+              ],
+            },
+          },
+          'sass-loader',
+        ],
+      },
+      {
+        test: /\.(jpg|png|gif)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 5 * 1024,
+              outputPath: 'images',
+            },
+          },
+        ],
+      },
+      {
+        test: /\.js$/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['env'],
+            },
+          },
+        ],
+        //exclude: /node_modules/,  //不去检查node_modules里的内容，那里的js太多了，会非常慢
+        include: resolve('src'), //直接规定查找的范围
+      },
+    ],
   },
 }

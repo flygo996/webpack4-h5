@@ -4,17 +4,21 @@ date: 2018.12.05
 
 # 依赖
 ```bash
-yarn add 
+npm i -D
 webpack webpack-cli #最基本的webpack4
-style-loader css-loader url-loader file-loader #style、css、以及里面引用的图片/图标资源loader
-html-webpack-plugin clean-webpack-plugin #基本的html和clean插件
-webpack-dev-server #dev开发需要，包含热启动
+html-webpack-plugin #自动生成html页面
+clean-webpack-plugin #删除dist文件夹
+webpack-dev-server #开发服务器-自动刷新、热更新、本地服务器等功能
+style-loader css-loader #style、css的loader
+url-loader file-loader #file-loader解析地址，url-loader把图片地址解析成base64
+mini-css-extract-plugin  #把css抽离插件适用于webpack4.3以上，低版本使用extract-text-webpack-plugin
 node-sass sass-loader postcss-loader autoprefixer #使用postcss和sass
-extract-text-webpack-plugin@next  #把css抽离插件
-babel-loader@7 babel-core babel-preset-es2015 babel-preset-env #es6+转es5相关
-html-loader #html文件直接引用img等资源，打包后路径不对，用该插件就可以解决！
+babel-loader babel-core babel-preset-env babel-polyfill #es6+转es5相关
+# html-loader #html文件直接引用img等资源，打包后路径不对，用该插件就可以解决！
 address #获取本机的ip地址
--D
+
+# 写一起如下：
+npm i -D webpack webpack-cli html-webpack-plugin clean-webpack-plugin webpack-dev-server style-loader css-loader url-loader file-loader mini-css-extract-plugin  node-sass sass-loader postcss-loader autoprefixer babel-loader babel-core babel-preset-env babel-polyfill address
 ```
 
 # 报错解决
