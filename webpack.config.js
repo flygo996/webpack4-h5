@@ -128,6 +128,7 @@ module.exports = {
             options: {
               limit: 5 * 1024,
               outputPath: 'images',
+              name: '[name].[hash:8].[ext]',
             },
           },
         ],
